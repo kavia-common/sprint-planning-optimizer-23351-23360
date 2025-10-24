@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { columns, getInitialBoard } from "../data/mockData";
+import { useToast } from "../utils/toast";
+import { updateIssue } from "../services/jiraService";
 
 // internal helper
 const Ticket = ({ item, onDragStart }) => {
@@ -24,8 +26,10 @@ const Ticket = ({ item, onDragStart }) => {
 
 // PUBLIC_INTERFACE
 export default function SprintPage() {
-  /** Sprint page showing columns and draggable tickets with capacity summary */
+  /** Sprint page showing columns and draggable tickets with capacity summary and Jira sync */
   const [board, setBoard] = useState(getInitialBoard());
+  const [syncing, setSyncing] = useState(false);
+  const { notify } = useToast();
 
   const onDragStart = (e, ticket) => {
     e.dataTransfer.setData("text/plain", JSON.stringify(ticket));
@@ -50,6 +54,34 @@ export default function SprintPage() {
   const totalPoints = Object.values(board).flat().reduce((sum, i) => sum + (i.points || 0), 0);
   const donePoints = board["Done"].reduce((s, i) => s + (i.points || 0), 0);
 
+  const flatTickets = useMemo(() => Object.values(board).flat(), [board]);
+
+  const syncWithJira = async () => {
+    // Minimal stub: push status changes only; assumes ticket.id is a Jira key if imported
+    try {
+      setSyncing(true);
+      let updated = 0;
+      for (const t of flatTickets) {
+        if ((t.source === "jira" || /^[A-Z]+-\d+$/.test(t.id)) && t.status) {
+          // NOTE: Transitioning status typically requires transitions endpoint; we keep a minimal example payload
+          const payload = { fields: { status: { name: t.status } } };
+          try {
+            await updateIssue(t.id, payload);
+            updated += 1;
+          } catch (e) {
+            // Conflict handling note: show warning but continue
+            notify(`Conflict or error updating ${t.id}: ${e.status || ""} ${e.message || e}`, "error");
+          }
+        }
+      }
+      notify(`Sync completed. Updated ${updated} issue(s) in Jira.`, "success");
+    } catch (e) {
+      notify(`Sync failed: ${e.message || e}`, "error");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="col">
       <div className="row card" aria-label="Capacity summary">
@@ -60,6 +92,10 @@ export default function SprintPage() {
         <div style={{ width: 220, height: 6, background: "#E5E7EB", borderRadius: 999, marginLeft: 8 }}>
           <div style={{ width: `${Math.min(100, (donePoints / Math.max(1, totalPoints)) * 100)}%`, height: "100%", background: "var(--color-secondary)", borderRadius: 999 }} />
         </div>
+        <div className="spacer" />
+        <button className="btn-primary" onClick={syncWithJira} disabled={syncing}>
+          {syncing ? "Syncing…" : "Sync Sprint with Jira"}
+        </button>
       </div>
 
       <div className="kanban" role="region" aria-label="Sprint board">

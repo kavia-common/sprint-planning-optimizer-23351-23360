@@ -1,51 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getJiraEnv } from "../api/jiraClient";
 
 // PUBLIC_INTERFACE
 export default function SettingsPage() {
-  /** Settings page holds placeholders for integrations configuration. No persistence yet. */
-  const [jira, setJira] = useState({ baseUrl: "", projectKey: "", email: "", token: "" });
+  /** Settings page: store default project/board/sprint locally and show env readiness */
+  const [jira, setJira] = useState({
+    projectKey: localStorage.getItem("jira.defaultProjectKey") || "",
+    boardId: localStorage.getItem("jira.defaultBoardId") || "",
+    sprintId: localStorage.getItem("jira.defaultSprintId") || "",
+  });
   const [toggles, setToggles] = useState({ autoAssign: true, autoRank: true, wsUpdates: true });
+
+  const env = getJiraEnv();
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // TODO: Hook to backend POST /api/integrations/jira (do not send token until backend is ready)
-    alert("Settings saved locally (placeholder). No external requests are made.");
+    // Persist non-secret defaults locally
+    localStorage.setItem("jira.defaultProjectKey", jira.projectKey || "");
+    localStorage.setItem("jira.defaultBoardId", jira.boardId || "");
+    localStorage.setItem("jira.defaultSprintId", jira.sprintId || "");
+    alert("Settings saved locally. These defaults will be used for Jira import/sync.");
   };
+
+  useEffect(() => {
+    // reflect env default on first load if LS empty
+    if (!jira.projectKey && env.defaultProjectKey) {
+      setJira(prev => ({ ...prev, projectKey: env.defaultProjectKey }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form className="col" onSubmit={onSubmit}>
       <div className="card">
         <div className="title">JIRA Integration</div>
-        <div className="subtitle">Configure your Atlassian project (placeholder, not persisted)</div>
+        <div className="subtitle">Configure defaults used by Import/Sync. Secrets must be set via environment variables.</div>
+
         <div className="row" style={{ marginTop: 10 }}>
           <label className="col" style={{ flex: 1 }}>
-            <span className="subtitle">Base URL</span>
-            <input placeholder="https://your-domain.atlassian.net"
-                   value={jira.baseUrl} onChange={e => setJira({ ...jira, baseUrl: e.target.value })}
-                   style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }} />
+            <span className="subtitle">Default Project Key</span>
+            <input
+              placeholder="e.g., SPR"
+              value={jira.projectKey}
+              onChange={e => setJira({ ...jira, projectKey: e.target.value })}
+              style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }}
+            />
           </label>
           <label className="col" style={{ flex: 1 }}>
-            <span className="subtitle">Project Key</span>
-            <input placeholder="e.g., SPR"
-                   value={jira.projectKey} onChange={e => setJira({ ...jira, projectKey: e.target.value })}
-                   style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }} />
+            <span className="subtitle">Default Board ID (optional)</span>
+            <input
+              placeholder="e.g., 12"
+              value={jira.boardId}
+              onChange={e => setJira({ ...jira, boardId: e.target.value })}
+              style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }}
+            />
           </label>
         </div>
         <div className="row">
           <label className="col" style={{ flex: 1 }}>
-            <span className="subtitle">Email (optional)</span>
-            <input type="email" placeholder="you@company.com"
-                   value={jira.email} onChange={e => setJira({ ...jira, email: e.target.value })}
-                   style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }} />
+            <span className="subtitle">Default Sprint ID (optional)</span>
+            <input
+              placeholder="e.g., 34"
+              value={jira.sprintId}
+              onChange={e => setJira({ ...jira, sprintId: e.target.value })}
+              style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }}
+            />
           </label>
-          <label className="col" style={{ flex: 1 }}>
-            <span className="subtitle">API Token (never stored)</span>
-            <input type="password" placeholder="••••••••"
-                   value={jira.token} onChange={e => setJira({ ...jira, token: e.target.value })}
-                   style={{ padding: 8, borderRadius: 8, border: "1px solid var(--color-border)" }} />
-          </label>
+          <div className="col" style={{ flex: 1 }}>
+            <span className="subtitle">Environment status</span>
+            <div className="row">
+              <span className="badge" title="Base URL">{env.baseURL ? "Base URL set" : "Base URL missing"}</span>
+              <span className="badge" title="Auth">{env.hasAuth ? "Auth configured" : "Auth missing"}</span>
+            </div>
+            <div className="subtitle">Set REACT_APP_JIRA_* vars in .env for authentication.</div>
+          </div>
         </div>
-        <div className="subtitle">TODO: When backend exists, load/save via /api/settings and use env for base hints.</div>
       </div>
 
       <div className="card">

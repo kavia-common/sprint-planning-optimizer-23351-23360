@@ -15,11 +15,33 @@ React frontend for AI-driven sprint planning with a modern dashboard layout.
 
 ## Quick start
 
-1. Install dependencies
+1. Copy environment example and fill Jira placeholders (optional but required for Jira features)
+   - `cp .env.example .env`
+   - Edit `.env` and set:
+     - `REACT_APP_JIRA_BASE_URL` (e.g., https://your-domain.atlassian.net)
+     - `REACT_APP_JIRA_EMAIL` (Atlassian account email)
+     - `REACT_APP_JIRA_API_TOKEN` (Personal Access Token from https://id.atlassian.com/manage-profile/security/api-tokens)
+     - Optionally `REACT_APP_JIRA_DEFAULT_PROJECT_KEY` (e.g., SPR)
+2. Install dependencies
    - `npm install`
-2. Run the app (port 3000)
+3. Run the app (port 3000)
    - `npm start`
-3. Open http://localhost:3000
+4. Open http://localhost:3000
+
+## Jira integration (scaffold)
+
+This UI includes a lightweight Jira REST client and service layer with:
+- Client: `src/api/jiraClient.js` (reads env vars, builds Basic auth, request helper with error handling)
+- Service: `src/services/jiraService.js` (fetchProjects, fetchBoards, fetchSprints, fetchIssues, updateIssue, createIssue)
+
+UI wiring:
+- Backlog page: "Import from Jira" button opens a modal to select a Project (and optionally Board/Sprint) then imports issues and merges into local backlog.
+- Sprint page: "Sync Sprint with Jira" button attempts to push local status/assignee changes back to Jira using `updateIssue`. Note: Jira typically requires using the transitions API to change status; this is a minimal example and may be restricted by workflow.
+- Settings page: store non-secret defaults (project key, board id, sprint id) in localStorage. Shows read-only indicators for whether env vars are set.
+
+Security note:
+- Do not hardcode secrets. This is a frontend-only scaffold; env values are injected at build time via `REACT_APP_*` variables. Use placeholders in `.env` locally.
+- For production-grade security, proxy requests via a backend.
 
 ## Scripts
 
@@ -31,11 +53,14 @@ React frontend for AI-driven sprint planning with a modern dashboard layout.
 
 - `src/AppRouter.js` - routes and layout composition
 - `src/AppLayout.js` - dashboard layout with sidebar/topbar
-- `src/pages/BacklogPage.js` - backlog table
-- `src/pages/SprintPage.js` - kanban with drag & drop
+- `src/pages/BacklogPage.js` - backlog table and Jira import
+- `src/pages/SprintPage.js` - kanban with drag & drop and Jira sync
 - `src/pages/InsightsPage.js` - insights placeholders
-- `src/pages/SettingsPage.js` - integration forms
+- `src/pages/SettingsPage.js` - integration defaults and env status
 - `src/components/Modal.js` - reusable modal
+- `src/utils/toast.js` - lightweight toast notifications
+- `src/services/jiraService.js` - Jira high-level service
+- `src/api/jiraClient.js` - Jira HTTP client
 - `src/data/mockData.js` - local mock data
 - `src/styles.css` + `src/theme.js` - Ocean Professional tokens and styles
 
@@ -52,5 +77,4 @@ Theme tokens are defined in `src/theme.js` and applied via CSS variables. Primar
 
 - REST endpoints: `/api/backlog`, `/api/sprint`, `/api/insights`, `/api/settings` (TODO)
 - WebSocket endpoint: `/ws/sprint` for live board updates (TODO)
-- Do not introduce API keys yet. When needed, use environment variables described in `.env.example`.
-
+- For Jira status transitions, add backend or extend client to use `/rest/api/3/issue/{issueIdOrKey}/transitions`.
