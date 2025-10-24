@@ -99,6 +99,7 @@ async function request(path, { method = "GET", params, body, headers } = {}) {
   }
 }
 
+/** Get effective Jira-related environment configuration (non-secret display) */
 // PUBLIC_INTERFACE
 export function getJiraEnv() {
   /** Returns effective Jira-related environment configuration (non-secret display) */
@@ -107,6 +108,11 @@ export function getJiraEnv() {
     email: env.email ? `${env.email}` : "",
     defaultProjectKey: env.defaultProjectKey || "",
     hasAuth: Boolean(env.email && env.token),
+    oauth: {
+      clientId: process.env.REACT_APP_JIRA_OAUTH_CLIENT_ID || "",
+      clientSecret: process.env.REACT_APP_JIRA_OAUTH_CLIENT_SECRET ? "set" : "",
+      redirectUri: process.env.REACT_APP_JIRA_OAUTH_REDIRECT_URI || "",
+    }
   };
 }
 
@@ -122,8 +128,26 @@ export function jiraPost(path, body) {
   return request(path, { method: "POST", body });
 }
 
+/** Perform PUT request to Jira REST API */
 // PUBLIC_INTERFACE
 export function jiraPut(path, body) {
   /** Perform PUT request to Jira REST API */
   return request(path, { method: "PUT", body });
+}
+
+// PUBLIC_INTERFACE
+export async function authenticateOAuth() {
+  /**
+   * Placeholder for Jira OAuth authentication flow.
+   * In a frontend-only app, a backend should handle the client secret securely.
+   * This function documents intended usage and returns a not-implemented result.
+   */
+  const clientId = process.env.REACT_APP_JIRA_OAUTH_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_JIRA_OAUTH_REDIRECT_URI;
+  if (!clientId || !redirectUri) {
+    return { ok: false, data: null, error: new Error("OAuth not configured. Set REACT_APP_JIRA_OAUTH_CLIENT_ID and REACT_APP_JIRA_OAUTH_REDIRECT_URI.") };
+  }
+  // Normally, redirect to Atlassian auth endpoint
+  // https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=...&scope=read%3Ajira-user&redirect_uri=...&state=xyz&response_type=code&prompt=consent
+  return { ok: false, data: null, error: new Error("OAuth flow not implemented in frontend; use backend to handle token exchange securely.") };
 }

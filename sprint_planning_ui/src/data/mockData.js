@@ -7,7 +7,7 @@ export const backlogItems = [
   { id: "US-106", title: "Risk scoring baseline", priority: "Low", points: 2, owner: "Ethan", status: "Done", tags: ["insights"] },
 ];
 
-export const columns = ["To Do", "In Progress", "Done"];
+export const columns = ["To Do", "In Progress", "Review", "Done"];
 
 // PUBLIC_INTERFACE
 export function getInitialBoard() {
@@ -15,6 +15,7 @@ export function getInitialBoard() {
   return {
     "To Do": backlogItems.filter(i => i.status === "To Do"),
     "In Progress": backlogItems.filter(i => i.status === "In Progress"),
+    "Review": backlogItems.filter(i => i.status === "Review"),
     "Done": backlogItems.filter(i => i.status === "Done"),
   };
 }

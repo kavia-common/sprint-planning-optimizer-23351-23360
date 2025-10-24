@@ -25,9 +25,18 @@ const Ticket = ({ item, onDragStart }) => {
 };
 
 // PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * SprintPage renders the Kanban board (Todo, In Progress, Review, Done-like) and Jira sync button.
+ */
 export default function SprintPage() {
   /** Sprint page showing columns and draggable tickets with capacity summary and Jira sync */
-  const [board, setBoard] = useState(getInitialBoard());
+  // initialize board with Review column placeholder
+  const [board, setBoard] = useState(() => {
+    const b = getInitialBoard();
+    if (!b["Review"]) b["Review"] = [];
+    return b;
+  });
   const [syncing, setSyncing] = useState(false);
   const { notify } = useToast();
 
@@ -99,7 +108,7 @@ export default function SprintPage() {
       </div>
 
       <div className="kanban" role="region" aria-label="Sprint board">
-        {columns.map(col => (
+        {["To Do","In Progress","Review","Done"].map(col => (
           <div
             key={col}
             className="kanban-col"

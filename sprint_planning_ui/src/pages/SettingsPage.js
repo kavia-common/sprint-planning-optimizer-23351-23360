@@ -35,6 +35,7 @@ export default function SettingsPage() {
       <div className="card">
         <div className="title">JIRA Integration</div>
         <div className="subtitle">Configure defaults used by Import/Sync. Secrets must be set via environment variables.</div>
+        <div className="subtitle">Env vars: REACT_APP_JIRA_BASE_URL, REACT_APP_JIRA_EMAIL, REACT_APP_JIRA_API_TOKEN, REACT_APP_JIRA_OAUTH_CLIENT_ID, REACT_APP_JIRA_OAUTH_CLIENT_SECRET, REACT_APP_JIRA_OAUTH_REDIRECT_URI.</div>
 
         <div className="row" style={{ marginTop: 10 }}>
           <label className="col" style={{ flex: 1 }}>
@@ -71,8 +72,9 @@ export default function SettingsPage() {
             <div className="row">
               <span className="badge" title="Base URL">{env.baseURL ? "Base URL set" : "Base URL missing"}</span>
               <span className="badge" title="Auth">{env.hasAuth ? "Auth configured" : "Auth missing"}</span>
+              <span className="badge" title="OAuth">{env.oauth?.clientId ? "OAuth configured" : "OAuth not set"}</span>
             </div>
-            <div className="subtitle">Set REACT_APP_JIRA_* vars in .env for authentication.</div>
+            <div className="subtitle">Set REACT_APP_JIRA_* vars in .env for authentication. OAuth placeholders are present but token exchange requires a backend.</div>
           </div>
         </div>
       </div>

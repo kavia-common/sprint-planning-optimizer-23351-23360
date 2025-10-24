@@ -5,6 +5,10 @@ import { useToast } from "../utils/toast";
 import { fetchProjects, fetchBoards, fetchSprints, fetchIssues, getDefaults } from "../services/jiraService";
 
 // PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * BacklogPage renders the backlog table with filters and Jira import modal.
+ */
 export default function BacklogPage() {
   /** Backlog page renders sortable/filterable table of items and allows importing from Jira */
   const [query, setQuery] = useState("");

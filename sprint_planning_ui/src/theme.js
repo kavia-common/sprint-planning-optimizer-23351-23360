@@ -15,7 +15,10 @@ export const theme = {
   radius: "10px",
 };
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Apply theme tokens to CSS variables on :root for consistent styling across components.
+ */
 export function applyCssVars() {
   /** Apply theme tokens to CSS variables on :root for consistent styling */
   const root = document.documentElement;

@@ -4,14 +4,15 @@ React frontend for AI-driven sprint planning with a modern dashboard layout.
 
 ## Overview
 
-- Collapsible sidebar with navigation: Backlog, Sprint, Insights, Settings
+- Collapsible sidebar with navigation: Backlog, Sprint Planner, Insights, Settings
 - Top bar with title and quick actions
-- Pages:
-  - Backlog: sortable/filterable table with item detail modal
-  - Sprint: Kanban board (native drag-and-drop), capacity summary widget
-  - Insights: effort prediction chart placeholder, risk/dependency panel
-  - Settings: integration configuration placeholders (e.g., JIRA)
+- Pages and routes:
+  - /backlog: sortable/filterable table with item detail modal
+  - /planner: Kanban board (native drag-and-drop-ready), capacity summary widget
+  - /insights: placeholder charts (velocity trend, capacity vs commitment)
+  - /settings: integration configuration placeholders (e.g., JIRA)
 - Ocean Professional theme with tokens from `src/theme.js` applied globally
+- App runs on port 3000
 
 ## Quick start
 
@@ -21,7 +22,8 @@ React frontend for AI-driven sprint planning with a modern dashboard layout.
      - `REACT_APP_JIRA_BASE_URL` (e.g., https://your-domain.atlassian.net)
      - `REACT_APP_JIRA_EMAIL` (Atlassian account email)
      - `REACT_APP_JIRA_API_TOKEN` (Personal Access Token from https://id.atlassian.com/manage-profile/security/api-tokens)
-     - Optionally `REACT_APP_JIRA_DEFAULT_PROJECT_KEY` (e.g., SPR)
+     - OAuth placeholders (optional for future): `REACT_APP_JIRA_OAUTH_CLIENT_ID`, `REACT_APP_JIRA_OAUTH_CLIENT_SECRET`, `REACT_APP_JIRA_OAUTH_REDIRECT_URI`
+     - Optional default: `REACT_APP_JIRA_DEFAULT_PROJECT_KEY`
 2. Install dependencies
    - `npm install`
 3. Run the app (port 3000)
@@ -36,8 +38,7 @@ This UI includes a lightweight Jira REST client and service layer with:
 
 UI wiring:
 - Backlog page: "Import from Jira" button opens a modal to select a Project (and optionally Board/Sprint) then imports issues and merges into local backlog.
-- Sprint page: "Sync Sprint with Jira" button attempts to push local status/assignee changes back to Jira using `updateIssue`. Note: Jira typically requires using the transitions API to change status; this is a minimal example and may be restricted by workflow.
-- Settings page: store non-secret defaults (project key, board id, sprint id) in localStorage. Shows read-only indicators for whether env vars are set.
+- Sprint Planner: "Sync Sprint with Jira" button attempts to push local status/assignee changes back to Jira using `updateIssue`. Note: Jira typically requires using the transitions API to change status; this is a minimal example and may be restricted by workflow.
 
 Security note:
 - Do not hardcode secrets. This is a frontend-only scaffold; env values are injected at build time via `REACT_APP_*` variables. Use placeholders in `.env` locally.

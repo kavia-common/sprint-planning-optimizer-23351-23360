@@ -21,7 +21,7 @@ const Icon = ({ name, size = 18 }) => {
 
 const navItems = [
   { to: "/backlog", label: "Backlog", icon: "backlog" },
-  { to: "/sprint", label: "Sprint", icon: "sprint" },
+  { to: "/planner", label: "Sprint Planner", icon: "sprint" },
   { to: "/insights", label: "Insights", icon: "insights" },
   { to: "/settings", label: "Settings", icon: "settings" },
 ];

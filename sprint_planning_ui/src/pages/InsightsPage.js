@@ -11,6 +11,11 @@ export default function InsightsPage() {
           <div className="subtitle">Projected points per day (placeholder)</div>
           <div role="img" aria-label="Effort prediction chart" style={{ marginTop: 10, height: 200, background: "linear-gradient(180deg, rgba(37,99,235,0.08), rgba(249,250,251,1))", borderRadius: 8 }} />
         </div>
+        <div className="card" style={{ flex: 2, minHeight: 280 }}>
+          <div className="title">Capacity vs Commitment</div>
+          <div className="subtitle">Relative burn vs. planned work (placeholder)</div>
+          <div role="img" aria-label="Capacity vs Commitment chart" style={{ marginTop: 10, height: 200, background: "linear-gradient(180deg, rgba(245,158,11,0.10), rgba(249,250,251,1))", borderRadius: 8 }} />
+        </div>
         <div className="card" style={{ flex: 1, minHeight: 280 }}>
           <div className="title">Risk & Dependencies</div>
           <div className="subtitle">Automated detection (placeholder)</div>

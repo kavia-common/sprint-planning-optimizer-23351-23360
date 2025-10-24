@@ -20,6 +20,7 @@ export default function AppRouter() {
           <Route index element={<Navigate to="/backlog" replace />} />
           <Route path="/backlog" element={<BacklogPage />} />
           <Route path="/sprint" element={<SprintPage />} />
+          <Route path="/planner" element={<SprintPage />} />
           <Route path="/insights" element={<InsightsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
