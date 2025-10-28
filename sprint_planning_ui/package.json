@@ -1,0 +1,107 @@
+{
+  "name": "sprint_planning_ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frontend interface for AI-driven sprint planning with backlog management, estimation visualization, and JIRA integration.",
+  "scripts": {
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
+    "format": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md,html,scss,yml,yaml}\"",
+    "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md,html,scss,yml,yaml}\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "react",
+      "react-hooks",
+      "jsx-a11y",
+      "prettier",
+      "import"
+    ],
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "node": true
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": true,
+          "semi": true,
+          "trailingComma": "es5",
+          "printWidth": 100,
+          "tabWidth": 2,
+          "arrowParens": "always",
+          "endOfLine": "lf"
+        }
+      ],
+      "no-unused-vars": [
+        "warn",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "react/prop-types": "off",
+      "react/react-in-jsx-scope": "off",
+      "import/order": [
+        "warn",
+        {
+          "groups": ["builtin", "external", "internal", ["parent", "sibling", "index"]],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ]
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "build/",
+      "dist/",
+      "coverage/",
+      ".next/",
+      ".turbo/",
+      ".cache/"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "tabWidth": 2,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.3.3"
+  }
+}
